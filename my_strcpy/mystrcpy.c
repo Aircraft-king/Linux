@@ -16,6 +16,6 @@ int main() {
   char arr1[11] = "\0";
   char arr2[11] = "abcdefghij";
   char* a = my_strcpy(arr1, arr2);
-  printf("%s", a);
+  printf("%s\n", a);
   return 0;
 }
