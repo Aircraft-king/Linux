@@ -149,6 +149,8 @@ void SelectAllOrder(const httplib::Request &req,httplib::Response &rsp){
   return;
 }
 
+#define CLIENT_CODE "./client_code"
+
 int main(){
   MYSQL *mysql = _order_sys::MYsqlInit();
   dish_table = new _order_sys::DishTable(mysql);
@@ -171,7 +173,7 @@ int main(){
   server.Put("/order",UpdateOrder);
   server.Get(R"(/order/(\d+))",SelectOneOrder);
   server.Get("/order",SelectAllOrder);
-
+  server.set_base_dir(CLIENT_CODE);
   server.listen("0.0.0.0",9000);
   _order_sys::MysqlDestroy(mysql);
 

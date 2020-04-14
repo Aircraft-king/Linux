@@ -23,5 +23,18 @@ int main(){
   std::string json_str = writer.write(value);
 
   printf("table:%s",json_str.c_str());
-  return 0;
+
+  Json::Value val2;
+  Json::Reader reader;
+  reader.parse(json_str,val2);
+  std::cout<<"name:"<<val2["姓名"]<<std::endl;
+  std::cout<<"sex:"<<val2["性别"]<<std::endl;
+  std::cout<<"age:"<<val2["年龄"]<<std::endl;
+  
+  std::cout<<"score:"<<val2["成绩"]<<std::endl;
+  for(auto it:val2["成绩"])
+  {
+    std::cout<<"成绩："<<it<<std::endl;
+  }
+ return 0;
 }

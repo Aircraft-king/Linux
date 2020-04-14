@@ -1656,7 +1656,7 @@ namespace httplib {
         if (!base_dir_.empty() && detail::is_valid_path(req.path)) {
             std::string path = base_dir_ + req.path;
 
-            if (!path.empty() && path.back() == '/') { path += "table.html"; }
+            if (!path.empty() && path.back() == '/') { path += "index.html"; }
 
             if (detail::is_file(path)) {
                 detail::read_file(path, res.body);
@@ -1768,7 +1768,7 @@ namespace httplib {
     }
 
     inline bool Server::routing(Request &req, Response &res) {
-        if (req.method == "GET" && handle_file_request(req, res)) { return true; }
+        //if (req.method == "GET" && handle_file_request(req, res)) { return true; }
 
         if (req.method == "GET" || req.method == "HEAD") {
             return dispatch_request(req, res, get_handlers_);

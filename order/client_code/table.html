@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{table_id}} 桌客人点餐</title>
+        <meta name="description" content="Charcoal is a free Bootstrap 4 UI kit build by @attacomsian at Wired Dots." />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--Bootstrap 4-->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <style>
+            [v-cloak] {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="app">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+            <a class="navbar-brand font-weight-bold" href="#">当前金额: {{calc_consume}}元</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="topMenu">
+                <ul class="navbar-nav ml-auto">
+                    
+                </ul>
+                <form class="form-inline ml-md-3">
+                    <a href="#" class="btn btn-light" v-on:click="send_order()" v-bind:disabled="calc_consume == 0">下单</a>
+                </form>
+            </div>
+        </nav>
+
+        <!--hero section-->
+        <!--components-->
+        <section class="my-5 pt-5">
+            <div class="container">
+                <!-- Tables  -->
+                <div class="row mb-5" id="tables">
+                    <div class="col-sm-12">
+                        
+                        <div class="mt-3 mb-5">
+                            <h3>菜单</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>菜名</th>
+                                        <th>价格</th>
+                                        <th>选择</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="dish in dishes">
+                                        <td v-cloak>{{dish.name}}</td>
+                                        <td v-cloak>{{dish.price / 100}}</td>
+                                        <td v-cloak >
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" v-model="dish.selected">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!--footer-->
+        <section class="py-5 bg-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3 col-sm-8 offset-sm-2 col-xs-12 text-center">
+                        <!-- <h3>Upgrade to Pro Version</h3>
+                        <p class="pt-2">
+                            We are working on <b>Charcoal Pro</b> which will be released soon. The pro version 
+                            will have a lot more components, sections, icons, plugins and example pages. 
+                            Join the waiting list to get notified when we release it (plus discount code).
+                        </p>
+                        <a class="btn btn-warning" href="https://wireddots.com/newsletter">Join Waiting List</a>
+                        <hr class="my-5"/> -->
+                        <p class="pt-2 text-muted">
+                            &copy; 2020 by Aircraft-king
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="/js/app.js"></script>
+        <script>
+            // 1. 修改滚动逻辑
+            // 2. 创建 Vue 实例, 并进行数据绑定
+            // 3. 单选框选择
+            // 4. ajax 获取菜单
+            // 5. ajax 发送订单
+            // 6. 计算属性实时显示金额
+            table_id = "{{table_id}}";
+            // 使用 Vue 完成和服务器的交互
+            vm = new Vue({
+                el: "#app",
+                data: {
+                    dishes: [
+                        //    {
+                        //        dish_id: 1,
+                        //        name: "回锅肉",
+                        //        price: 1900
+                        //    },
+                    ]
+                },
+                methods: {
+                    get_dishes: function() {
+                        $.ajax({
+                            url: "/dish",
+                            type: "get",
+                            context: this,  // 设置回调函数的 this 对象为 vm 对象
+                            success: function (data, status) {
+                                this.dishes = data;
+                            }
+                        })
+                    },
+                    send_order: function () {
+                        // 1. 发送前校验
+                        if (this.calc_consume == 0) {
+                            alert("还未选择菜品!")
+                            return;
+                        }
+                        // 2. 获取所有选中的菜品 id
+                        var dish_ids = [];
+                        
+                        for (index in this.dishes) {
+                            var dish = this.dishes[index]
+                            if (dish.selected) {
+                                dish_ids.push(dish.dish_id);
+                            }
+                        }
+                        // 3. 构造请求并发送
+                      var order ={
+                        table_id : 3,
+                        status : 0,
+                        dishes : dish_ids;
+                      }
+                        $.ajax({
+                            url: "/dish",
+                            type: "post",
+                            context:this，
+                            data : order,
+                            success: function (data, status) {
+                                alert("下单成功!")
+                                return true;
+                            }
+                          alert("下单失败")；
+                          return false
+                        })
+                    },
+                }, 
+                computed: {
+                    calc_consume: function() {
+                        var consume = 0;
+                        for (index in this.dishes) {
+                            var dish = this.dishes[index]
+                            if (dish.selected) {
+                                consume += dish.price
+                            }
+                        }
+                        return consume / 100;
+                    }
+                }
+            });
+            vm.get_dishes();
+        </script>
+    </body>
+</html>
