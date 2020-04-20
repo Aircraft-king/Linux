@@ -1,47 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+<style>
+.xue{
+  background-image:url(timg.jpg);
+  background-repeat:repeat-x repeat-y;
+  background-size:100% 100%;
+}
+</style>
     <meta charset="utf-8">
     <title>点餐系统</title>
     <meta name="description" content="Charcoal is a free Bootstrap 4 UI kit build by @attacomsian at Wired Dots." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--Bootstrap 4-->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <style>
-[v-cloak] {
-  display: none;
-}
-    </style>
   </head>
-  <body>
-    <div id="app">
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
-        <a class="navbar-brand font-weight-bold" href="#">当前金额: {{calc_consume}}元</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <body class="xue">
 
-        <div class="collapse navbar-collapse" id="topMenu">
-          <ul class="navbar-nav ml-auto">
-
-          </ul>
-          <form class="form-inline ml-md-3">
-            <a href="#" class="btn btn-light" v-on:click="send_order()" v-bind:disabled="calc_consume == 0">下单</a>
-          </form>
-        </div>
-      </nav>
-
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top sticky-navigation">
+      <h1>同福大酒楼</h1>
+    </nav>
+    
       <!--hero section-->
       <!--components-->
       <section class="my-5 pt-5">
         <div class="container">
-          <div id="app">
+          <div id="app"> 
             <!-- Tables  -->
-            <div class="row mb-5" id="tables">
+            <div class="row mb-2" id="tables">
               <div class="col-sm-12">
-                  <h3>老陕饭店</h3>
-                <div class="mt-3 mb-5">
-                  <h4>菜单：</h4>
+                <div class="mt-5 mb-5">
+                  <h4>菜单:</h4>
                   <table class="table table-hover">
                     <thead>
                       <tr>
@@ -50,13 +39,20 @@
                         <th>选择</th>
                       </tr>
                     </thead>
+                    <tfoot>
+                      <tr>
+                        <th>总价：{{total_price/100}}</th>
+                        <th></th>
+                        <th><button type="button" class="btn btn-primary" v-on:click="send_order()">下单</th>
+                      </tr>
+                    </tfoot>
                     <tbody>
-                      <tr v-for = 'dish in dishes'>
+                      <tr v-for="dish in dishes">
                         <td>{{dish.name}}</td>
-                        <td>{{dish.price/100}}</td>
+                        <td>{{dish.price / 100}}</td>
                         <td>
                           <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input">
+                            <input type="checkbox" class="custom-control-input" v-model="dish.is_selected">
                             <span class="custom-control-indicator"></span>
                           </label>
                         </td>
@@ -64,57 +60,108 @@
                     </tbody>
                   </table>
                 </div>
+              </div>
             </div>
-           </div>
+          </div>
         </div>
-      </div>
-              <!--footer-->
-              <section class="py-5 bg-dark">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-md-6 offset-md-3 col-sm-8 offset-sm-2 col-xs-12 text-center">
-                      <!-- <h3>Upgrade to Pro Version</h3>
-                        <p class="pt-2">
-                        We are working on <b>Charcoal Pro</b> which will be released soon. The pro version 
-                        will have a lot more components, sections, icons, plugins and example pages. 
-                        Join the waiting list to get notified when we release it (plus discount code).
-                        </p>
-                        <a class="btn btn-warning" href="https://wireddots.com/newsletter">Join Waiting List</a>
-                        <hr class="my-5"/> -->
-                        <p class="pt-2 text-muted">
-                        &copy; by Aircraft
-                        </p>
-                    </div>
-                  </div> 
-                </div>
-              </section>
-
-              <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+      </section>
+      <!--footer-->
+     <section class="py-5 bg-dark">
+       <div class="container">
+         <div class="row">
+           <div class="col-md-6 offset-md-3 col-sm-8 offset-sm-2 col-xs-12 text-center">
+             <p class="pt-2 text-muted">
+               &copy; 2020 by Aircraft-king
+              </p>
+          </div>
+         </div>
+       </div>
+     </section>
+             <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
               <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
               <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
               <script src="js/app.js"></script>
-              <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-              <script>
-                var app = new Vue({
-                  e1: '#app',
-                  data: {
-                    dishes:[
-                      {
-                        id:1,
-                        name:"豆角茄子",
-                        price:2300,
-                        uptime:"2020-04-15 10:23:22"
-                      },
-                      {
-                        id:2,
-                        name:"茄子",
-                        price:2500,
-                        uptime:"2020-04-15 10:23:22"
-                      },
-                    ]
-                  }
-                });
-              </script>
+             <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      data:{
+        dishes:[
+          /*{
+            id:1,
+            name:"豆角茄子",
+            price:2300,
+            uptime:"2020-04-19 19:55:35"
+          },
+          {
+            id:2,
+            name:"红烧肉",
+            price:4300,
+            uptime:"2020-04-19 19:55:35"
+          }*/
+          ],
+        table_id:3//桌号由服务端返回
+      },
+      methods:{
+        get_alldishes:function(){
+          //用jQuery中的ajax动态获取后台数据
+          $.ajax({
+            url:"/dish",
+            type:"GET",
+            context:this,
+            success:function(result,status){
+             this.dishes=result;
+            }
+          })
+        },
+        send_order:function(){
+          //获取当前菜品信息，组织成json数据串，发给服务器
+          if(this.total_price == 0){
+            alert("请选择菜品后下单");
+            return false;
+          }
+          var mdishes = [];
+          for(index in this.dishes){
+            var dish = this.dishes[index];
+            if(dish.is_selected == true){
+              mdishes.push(dish.id);
+            }
+          } 
+          var order = {
+            table_id:this.table_id,
+            status:0,
+            dishes:mdishes
+          }
+          $.ajax({
+            url:"/order",
+            type:"post",
+            context:this,
+            data:JSON.stringify(order),
+            success:function(result,status){
+              if(status == "success"){
+                alert("下单成功");//页面弹框
+                return true;
+              }
+              alert("下单失败");
+              return false;
+            }
+          })
+        }
+      },
+      computed:{
+        total_price:function(){
+          var total_price = 0;
+          for(index in this.dishes){
+            var dish = this.dishes[index];
+            if(dish.is_selected == true){
+              total_price += dish.price;
+            }
+          }
+            return total_price;
+        }
+      }
+    });
+  app.get_alldishes();
+  </script>
   </body>
 </html>
