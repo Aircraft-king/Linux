@@ -7,6 +7,8 @@
 
 int main(){
   int fd=open("myfile",O_RDONLY);
+
+  printf("%d",fd);
   if(fd < 0){
     perror("OPEN");
     return 1;
